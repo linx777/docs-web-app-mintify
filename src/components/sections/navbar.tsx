@@ -85,7 +85,7 @@ export default function Navbar({
                         className={cn(
                           "link nav-tabs-item group relative flex h-full items-center gap-2 font-medium",
                           item.current
-                            ? "text-gray-800 dark:text-gray-200 [text-shadow:-0.2px_0_0_currentColor,0.2px_0_0_currentColor]"
+                            ? "text-black dark:text-black [text-shadow:-0.2px_0_0_currentColor,0.2px_0_0_currentColor]"
                             : "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
                         )}
                         onClick={() => onTabChange?.(item.title)}

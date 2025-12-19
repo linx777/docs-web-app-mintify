@@ -19,7 +19,11 @@ const MarkdownRenderer = ({ content, className }: MarkdownRendererProps) => {
             <a {...props} target="_blank" rel="noreferrer" className="markdown-link" />
           ),
           pre: ({ ...props }) => <pre {...props} className="markdown-pre" />,
-          code: ({ inline, className: codeClassName, ...props }) =>
+          code: ({
+            inline,
+            className: codeClassName,
+            ...props
+          }: { inline?: boolean; className?: string } & React.HTMLAttributes<HTMLElement>) =>
             inline ? (
               <code {...props} className={cn("markdown-code-inline", codeClassName)} />
             ) : (
