@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
 
 :root {
   --background: var(--color-background);
@@ -74,12 +73,17 @@
   --color-text-secondary: #6b7280;
   --color-text-tertiary: #9ca3af;
 
-  --font-display: var(--font-lato);
-  --font-body: var(--font-lato);
-  --font-code: var(--font-ibm-plex-mono);
+  --font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-code: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
@@ -147,6 +151,44 @@
   }
 }
 
+.dark {
+  --color-background: #0c111a;
+  --color-foreground: #e5e7eb;
+  --color-card: #0f1724;
+  --color-card-foreground: #e5e7eb;
+  --color-popover: #0f1724;
+  --color-popover-foreground: #e5e7eb;
+  --color-primary: #10b981;
+  --color-primary-foreground: #0c111a;
+  --color-secondary: #111827;
+  --color-secondary-foreground: #d1d5db;
+  --color-muted: #111827;
+  --color-muted-foreground: #9ca3af;
+  --color-accent: #14b8a6;
+  --color-accent-foreground: #0c111a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #0c111a;
+  --color-border: #1f2937;
+  --color-input: #374151;
+  --color-ring: #10b981;
+  --color-chart-1: #f59e0b;
+  --color-chart-2: #34d399;
+  --color-chart-3: #38bdf8;
+  --color-chart-4: #f472b6;
+  --color-chart-5: #c084fc;
+  --color-sidebar: #0f1724;
+  --color-sidebar-foreground: #e5e7eb;
+  --color-sidebar-primary: #10b981;
+  --color-sidebar-primary-foreground: #0c111a;
+  --color-sidebar-accent: #0b1621;
+  --color-sidebar-accent-foreground: #10b981;
+  --color-sidebar-border: #1f2937;
+  --color-sidebar-ring: #10b981;
+  --color-text-primary: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+}
+
 @keyframes accordion-down {
   from {
     height: 0;
@@ -165,4 +207,62 @@
   to {
     height: 0;
   }
+}
+
+.markdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.25rem;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--color-border);
+  padding-left: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.markdown-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 1px;
+}
+
+.markdown-pre {
+  background-color: var(--color-muted);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+}
+
+.markdown-code-block {
+  display: block;
+  font-family: var(--font-code);
+}
+
+.markdown-code-inline {
+  background-color: var(--color-muted);
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.35rem;
+  font-family: var(--font-code);
+  font-size: 0.95em;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  text-align: left;
 }

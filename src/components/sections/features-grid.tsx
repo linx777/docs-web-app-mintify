@@ -67,6 +67,8 @@ export default function FeaturesGrid({ activeTab }: { activeTab: string }) {
       ? features
       : features.filter((feature) => feature.category === activeTab);
 
+  if (filteredFeatures.length === 0) return null;
+
   return (
     <section className="w-full px-4 pb-16">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-4xl mx-auto">

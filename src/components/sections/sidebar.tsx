@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import * as React from "react";
 
+import { SectionGroup } from "@/lib/markdown";
 import {
   BookOpenIcon,
   ChevronDownIcon,
@@ -18,7 +18,8 @@ import { cn } from "@/lib/utils";
 
 type NavItem = {
   title: string;
-  href: string;
+  slug: string;
+  sectionSlug: string;
 };
 
 type NavGroup = {
@@ -27,60 +28,47 @@ type NavGroup = {
   items: NavItem[];
 };
 
-const navGroups: NavGroup[] = [
-  {
-    title: "Overview",
-    icon: BookOpenIcon,
-    items: [
-      { title: "Automata", href: "/" },
-      { title: "Why It Matters", href: "/" },
-      { title: "How It Works", href: "/" },
-    ],
-  },
-  {
-    title: "Products",
-    icon: LayersIcon,
-    items: [
-      { title: "DCAP Dashboard", href: "/" },
-      { title: "Explorer", href: "/" },
-      { title: "1RPC", href: "/" },
-      { title: "L2 Faucet", href: "/" },
-      { title: "Bridge", href: "/" },
-    ],
-  },
-  {
-    title: "Infrastructure",
-    icon: ServerIcon,
-    items: [
-      { title: "Trusted Execution Environments (TEEs)", href: "/" },
-      { title: "DCAP Verification", href: "/" },
-      { title: "Proof of Machinehood (PoM)", href: "/" },
-    ],
-  },
-  {
-    title: "Protocol",
-    icon: CpuIcon,
-    items: [
-      { title: "App-Specific Rollup", href: "/" },
-      { title: "Network(testnet/mainet)", href: "/" },
-      { title: "Specification", href: "/" },
-    ],
-  },
-  {
-    title: "Research",
-    icon: GlobeIcon,
-    items: [
-      { title: "Account Abstraction", href: "/" },
-      { title: "Decentralized Randomness", href: "/" },
-      { title: "Maximal Extractable Value", href: "/" },
-      { title: "Reproducible Build", href: "/" },
-      { title: "Lightpaper", href: "/" },
-    ],
-  },
-];
+const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+  Overview: BookOpenIcon,
+  Products: LayersIcon,
+  Infrastructure: ServerIcon,
+  Protocol: CpuIcon,
+  Research: GlobeIcon,
+};
 
-export default function Sidebar({ activeTab }: { activeTab: string }) {
-  const pathname = usePathname();
+function normalize(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+export default function Sidebar({
+  activeTab,
+  activeDocSlug,
+  sections,
+  onSelectDoc,
+  onSearch,
+}: {
+  activeTab: string;
+  activeDocSlug?: string;
+  sections: SectionGroup[];
+  onSelectDoc?: (sectionSlug: string, docSlug: string) => void;
+  onSearch?: () => void;
+}) {
+  const sectionLookup = React.useMemo(
+    () => new Map(sections.map((section) => [normalize(section.title), section] as const)),
+    [sections],
+  );
+
+  const navGroups = React.useMemo<NavGroup[]>(() => {
+    return sections.map((section) => ({
+      title: section.title,
+      icon: iconMap[section.title] ?? BookOpenIcon,
+      items: section.docs.map((doc) => ({
+        title: doc.title,
+        slug: doc.slug,
+        sectionSlug: section.slug,
+      })),
+    }));
+  }, [sections]);
 
   const filteredNavGroups = activeTab
     ? navGroups.filter((group) => group.title === activeTab)
@@ -112,6 +100,7 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
               type="button"
               className="flex rounded-lg w-full items-center text-sm leading-6 h-9 pl-3 pr-3 text-sidebar-foreground bg-background dark:bg-background/50 ring-1 ring-border hover:ring-ring transition-all justify-between truncate gap-2"
               aria-label="Open search"
+              onClick={onSearch}
             >
               <div className="flex items-center gap-2 min-w-0">
                 <SearchIcon className="h-4 w-4 text-muted-foreground" />
@@ -171,20 +160,31 @@ export default function Sidebar({ activeTab }: { activeTab: string }) {
                     <div className="pt-0 pb-4">
                       <div className="flex flex-col space-y-1">
                         {group.items.map((item) => {
-                          const isActive = item.href === pathname;
+                          const section = sectionLookup.get(normalize(group.title));
+                          const doc =
+                            section?.docs.find(
+                              (docItem) => normalize(docItem.title) === normalize(item.title),
+                            ) ?? section?.docs.find((docItem) => normalize(docItem.slug) === normalize(item.slug));
+                          const isActive = doc ? doc.slug === activeDocSlug : false;
+
                           return (
-                            <Link
+                            <button
                               key={item.title}
-                              href={item.href}
+                              type="button"
                               className={cn(
-                                "flex items-center px-3 py-1.5 text-sm rounded-md transition-colors",
+                                "flex items-center px-3 py-1.5 text-sm rounded-md transition-colors text-left",
                                 isActive
                                   ? "bg-secondary text-[#E85A30] font-medium"
                                   : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                               )}
+                              onClick={() => {
+                                if (section && doc && onSelectDoc) {
+                                  onSelectDoc(section.slug, doc.slug);
+                                }
+                              }}
                             >
                               {item.title}
-                            </Link>
+                            </button>
                           );
                         })}
                       </div>
